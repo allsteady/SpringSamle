@@ -1,0 +1,83 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:util="http://www.springframework.org/schema/util"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="duke" class="com.springinaction.springidol.Juggler" >
+		<constructor-arg value="15"> </constructor-arg>
+	</bean>
+
+	<bean id="poeticDuke" class="com.springinaction.springidol.PoeticJuggler" >
+		<constructor-arg value="15"> </constructor-arg>
+		<constructor-arg ref="sonnet29"> </constructor-arg>
+	</bean>
+
+
+
+	<bean id="sonnet29" class="com.springinaction.springidol.Sonnet29"></bean>
+	
+	<bean id="theStage" class="com.springinaction.springidol.Stage" factory-method="getInstance"></bean>
+	
+	<!--
+		bean을 생성하기 전에 초기화하거나 제거 하기 전에 후행 작업을 처리 할 때 사용
+		Spring의 기본 함수는 다음과 같다.
+		 	InitializeBean과 DisposableBean
+	-->
+	<bean id="auditorium"
+		class="com.springinaction.springidol.Auditorium"
+		init-method="turnOnLights" destroy-method="turnOffLights"></bean>
+
+	
+	<bean id="saxphone" class="com.springinaction.springidol.Saxophone">
+	</bean>
+
+
+
+
+	<!--  일반 빈 주입 기법 -->
+	<bean id="kenny" class="com.springinaction.springidol.Instrumentalist">
+		<property name="song" value="Jingle Bells"></property> <!-- setSong 메소드를 호출하라는 의미  (primitive - value)-->
+		<property name="instrument" ref="saxphone"></property> <!-- setSong 메소드를 호출하라는 의미 (Object ref) -->
+	</bean>
+
+
+
+
+	<!--  내부 빈 주입 기법 -->
+	<!-- 
+		생성자에서도 사용 가능함
+		내부 빈에는 id에트리 뷰트가 없다. 있어도 상관은 없지만, 다른 빈들에서는 참조가 불가능,
+		즉 재사용이 어렵다는 단점을 가지고 있음.
+		또다른 단점은 가독성이 떨어진다. 
+	 -->
+	<bean id="kenny2" class="com.springinaction.springidol.Instrumentalist">
+		<property name="song" value="Jingle Bells"></property> <!-- setSong 메소드를 호출하라는 의미  (primitive - value)-->
+		<property name="instrument" >
+			<bean class="com.springinaction.springidol.Piano"> </bean>
+		</property> <!-- setSong 메소드를 호출하라는 의미 (Object ref) -->
+	</bean>
+
+	<!-- 2.2.4  컬렉션 와이어링 -->
+	<!-- list의 경우 자식으로 list가 가능하다. -->
+	<bean id="hank" class="com.springinaction.springidol.OneManBand">
+		<property name="instruments">
+			<list>
+				<ref bean="guitar"></ref>
+				<ref bean="symbal"></ref>
+				<ref bean="harmonica"></ref>
+			</list>
+		</property>
+	</bean>
+	
+	<!--  -->
+	<bean id="hank" class="com.springinaction.springidol.OneManBand">
+		<property name="instruments">
+			<map>
+				<entry key="GUITAR" value-ref="guitar"></entry>
+				<entry key="SYMBOL" value-ref="symbol"></entry>
+				<entry key="HARMONICA" value-ref="harmonica"></entry>
+			</map>
+		</property>
+	</bean>
+</beans>
